@@ -114,7 +114,7 @@ class CovidMap extends Component {
       <div>
         <div style={{
           padding: "10px",
-          backgroundColor: "grey",
+          backgroundColor: "blue",
         }}>Confirmed: {item.confirmed}</div>
         <div style={{
           padding: "10px",
@@ -125,7 +125,8 @@ class CovidMap extends Component {
           backgroundColor: "red",
         }}>Critical: {item.critical}</div>
         <div style={{
-          borderStyle:"solid",
+          padding: "10px",
+          backgroundColor: "grey",
         }}>Deaths: {item.deaths}</div>
       </div>
       );
@@ -153,7 +154,7 @@ class CovidMap extends Component {
         </div>
         <div className="TotalInfoWrapper" style={{width:"49vw", height: "200px", float:"left", textAlign:"center", margin: "0px", padding: "0px"}}>
             <div style={{fontSize:"30px"}}>Total : {listTotal}</div>
-            <button onClick={()=>this.fetchTotals()}>Update Totals</button>
+            <button style={{fontSize: "30px"}} onClick={()=>this.fetchTotals()}>Update Totals</button>
         </div>  
         <div style={{overflow: "hidden", float:"left"}}>
           {listItems}
