@@ -8,7 +8,11 @@ class CovidMap extends Component {
       Covid: [],
       isLoading: false,
       Totals: [],
+      Country: [],
+      value: '',
     }
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentDidMount(){
@@ -38,30 +42,34 @@ class CovidMap extends Component {
     })
     .then(response => response.json().then((result)=>{
       this.setState({Totals: result});
-      console.log(this.state.Totals);
     }))
     .catch(err => {
 	    console.log(err);
     });
-     console.log(this.state.Totals);
   }
 
-  getCountryDatabyName(name){
-    const encodedURL = encodeURIComponent(name);
+  handleChange(event) {
+    this.setState({value: event.target.value});
+}
+
+  handleSubmit(event) {
+    const encodedURL = encodeURIComponent(this.state.value);
+    console.log(encodedURL);
     fetch("https://covid-19-data.p.rapidapi.com/country?format=undefined&name="+encodedURL, {
-	    "method": "GET",
-	    "headers": {
-		    "x-rapidapi-host": "covid-19-data.p.rapidapi.com",
-		    "x-rapidapi-key": "34bd11e989msh39e775948fdba82p1d191ajsna92920e8f23c"
-	    },
-    })
-    .then(response => response.json().then((result)=>{
-      console.log(result)
-    }))
-    .catch(err => {
-	    console.log(err);
-    });
- 
+    "method": "GET",
+	  "headers": {
+		  "x-rapidapi-host": "covid-19-data.p.rapidapi.com",
+		  "x-rapidapi-key": "34bd11e989msh39e775948fdba82p1d191ajsna92920e8f23c"
+	  }
+  })
+  .then(response => response.json().then((result)=>{
+    this.setState({Country: result});
+    console.log(this.state.Country);
+  }))
+  .catch(err => {
+	  console.log(err);
+  });
+    event.preventDefault();
   }
 
   showData(){
@@ -114,7 +122,7 @@ class CovidMap extends Component {
       <div>
         <div style={{
           padding: "10px",
-          backgroundColor: "blue",
+          backgroundColor: "#FFA500",
         }}>Confirmed: {item.confirmed}</div>
         <div style={{
           padding: "10px",
@@ -122,7 +130,7 @@ class CovidMap extends Component {
         }}>Recovered: {item.recovered}</div>
         <div style={{
           padding: "10px",
-          backgroundColor: "red",
+          backgroundColor: "#B22222",
         }}>Critical: {item.critical}</div>
         <div style={{
           padding: "10px",
@@ -130,6 +138,14 @@ class CovidMap extends Component {
         }}>Deaths: {item.deaths}</div>
       </div>
       );
+      const listCountryz = this.state.Country.map((data,i)=>{
+        return <div style={{textAlign:"center"}}>
+          <div>CONFIRMED:{data.confirmed}</div>
+          <div>RECOVERED:{data.recovered}</div>
+          <div>CRITICAL: {data.critical}</div>
+          <div>DEATHS: {data.deaths}</div>
+        </div>
+      })
     return (
       <div>
         <h1 style={{
@@ -154,7 +170,19 @@ class CovidMap extends Component {
         </div>
         <div className="TotalInfoWrapper" style={{width:"49vw", height: "200px", float:"left", textAlign:"center", margin: "0px", padding: "0px"}}>
             <div style={{fontSize:"30px"}}>Total : {listTotal}</div>
+            <p></p>
             <button style={{fontSize: "30px"}} onClick={()=>this.fetchTotals()}>Update Totals</button>
+            <p></p>
+            <div style={{width: "49vw", fontSize:"30px"}}>
+            <form onSubmit={this.handleSubmit}>
+            <label>
+            Country Search: &nbsp;
+            <input type="text" value={this.state.value} style={{fontSize: "30px"}} onChange={this.handleChange} />
+            </label>
+            <input type="submit" value="Submit" style={{fontSize: "30px"}} />
+            <div>{listCountryz}</div>
+            </form>
+            </div>
         </div>  
         <div style={{overflow: "hidden", float:"left"}}>
           {listItems}
